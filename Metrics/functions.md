@@ -8,7 +8,7 @@ Unfortinately, using 10s as a lookbehind window doesn't work as expected - it is
 irate(unifi_devices_wireless_received_bytes_total[5m])
 It is likely this query would return data transfer rate, which is closer to the expected 10MBs if the interval between raw samples (aka scrape_interval) is lower than 10 seconds.
 
-Unfortunately, it isn't recommended to use irate() function in general case, since it tends to return jumpy results when refreshing graphs on big time ranges. Read this article for details.
+Unfortunately, it isn't recommended to use irate() function in general case, since it tends to return jumpy results when refreshing graphs on big time ranges. Read this article for details. (https://valyala.medium.com/why-irate-from-prometheus-doesnt-capture-spikes-45f9896d7832)
 
 So the ultimate solution is to use rollup_rate function from VictoriaMetrics - the project I work on. It reliably detects spikes in counter rates by returning the minimum, maximum and average per-second increase rate across all the raw samples on the selected time range.
 
