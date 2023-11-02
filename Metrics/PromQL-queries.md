@@ -41,3 +41,11 @@ Per-node CPU usage percentage:
     / on(node)
   kube_node_status_capacity{resource="cpu"}
 )
+### PromQL difference between memory usage and working set
+The difference between memory usage and working set in PromQL is that the memory usage means the total amount of memory allocated to a process, while working set is the amount of memory that is actively being used by the process. Memory usage includes both active and inactive memory, while the working set only includes the memory that is being actively used. In other words, the working set is a subset of the memory usage.
+The following expression can be used to sum the average pod container memory usage by namespace and pod over a two day period:
+
+- sum by (namespace, pod) (avg_over_time(pod:container_memory_usage_bytes:sum[2d]))
+
+Recommendation is to use the following query because memory_working_set will give the memory usage which is actively used.
+- sum by (namespace, pod) (avg_over_time(node_namespace_pod_container:container_memory_working_set_bytes{}[2h])/1048576)
